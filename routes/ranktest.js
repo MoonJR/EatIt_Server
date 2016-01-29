@@ -21,19 +21,25 @@ router.post('/', function (req, res, next) {
                     var con = JSON.parse(js);
 
                     connection.query('UPDATE user_info SET weight = weight + ?  WHERE user_id = ? and food_index = ? and distinction = ? ; ', [con.weight, con.user_id, con.food_index, con.distinction], function (error2, info2) {
-                        if (error2 != null)
+                        if (error2 != null) {
+                            console.log(error2);
                             res.status(503).json(error);
+                        }
                     });
 
                     connection.query('UPDATE my_info SET my_weight = my_weight + ? WHERE user_id = ? and my_food_index = ? and my_distinction = ?; ', [con.weight, con.user_id, con.food_index, con.distinction], function (error2, info2) {
-                        if (error2 != null)
+                        if (error2 != null) {
+                            console.log(error2);
                             res.status(503).json(error);
+                        }
                     });
 
 
                     connection.query('UPDATE food_list SET rank = rank + ? WHERE food_index = ? and distinction = ?; ', [con.weight, con.food_index, con.distinction], function (error2, info2) {
-                        if (error2 != null)
+                        if (error2 != null) {
+                            console.log(error2);
                             res.status(503).json(error);
+                        }
                     });
                 }
             }
@@ -43,24 +49,32 @@ router.post('/', function (req, res, next) {
                     var con = JSON.parse(js);
 
                     connection.query('insert into user_info(user_id, food_index, weight, distinction) values(?,?,?,?);', [con.user_id, con.food_index, con.weight, con.distinction], function (error3, info3) {
-                        if (error3 != null)
-                            res.status(503).json(error);
+                        if (error3 != null) {
+                            console.log(error3);
+                            res.status(503).json(error3);
+                        }
                     });
 
                     connection.query('insert into my_info(user_id, my_food_index, my_weight, my_distinction) values(?,?,?,?);', [con.user_id, con.food_index, con.weight, con.distinction], function (error3, info3) {
-                        if (error3 != null)
-                            res.status(503).json(error);
+                        if (error3 != null) {
+                            console.log(error3);
+                            res.status(503).json(error3);
+                        }
                     });
 
-                    connection.query('UPDATE food_list SET rank = rank + ? WHERE food_index = ? and distinction = ?; ', [con.weight, con.food_index, con.distinction], function (error2, info2) {
-                        if (error2 != null)
-                            res.status(503).json(error);
+                    connection.query('UPDATE food_list SET rank = rank + ? WHERE food_index = ? and distinction = ?; ', [con.weight, con.food_index, con.distinction], function (error3, info3) {
+                        if (error3 != null) {
+                            console.log(error3);
+                            res.status(503).json(error3);
+                        }
                     });
                 }
             }
         }
-        else
+        else {
+            console.log(error);
             res.status(503).json(error);
+        }
     });
 });
 module.exports = router;
