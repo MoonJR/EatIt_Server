@@ -10,14 +10,12 @@ var connection = mysql.createConnection({
 router.post('/', function (req, res, next) {
 
     try {
-
-
         var jsontext = JSON.stringify(req.body[0]);
         var contact = JSON.parse(jsontext);
 
         console.log(contact);
 
-        connection.query('select * from user_info where user_id= ?  and food_index=? and distinction = ?;', [contact.user_id, contact.food_index.contact.distinction], function (error, info1) {
+        connection.query('select * from user_info where user_id= ?  and food_index=? and distinction = ?;', [contact.user_id, contact.food_index, contact.distinction], function (error, info1) {
             if (error == null) {
                 if (info1.length > 0) {
                     for (var i = 0; i < 64; i++) {  //for문시작
