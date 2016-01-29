@@ -48,6 +48,8 @@ router.post('/', function (req, res, next) {
                     var js = JSON.stringify(req.body[i]);
                     var con = JSON.parse(js);
 
+                    console.log(con);
+
                     connection.query('insert into user_info(user_id, food_index, weight, distinction) values(?,?,?,?);', [con.user_id, con.food_index, con.weight, con.distinction], function (error3, info3) {
                         if (error3 != null) {
                             console.log(error3);
