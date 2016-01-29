@@ -29,12 +29,16 @@ router.post('/', function (req, res, next) {
                 if (cursor.length > 0) {
                     res.json({result: true, user_id: cursor[0].user_id});
                 }
-                else
+                else {
+                    console.log(error);
                     res.status(503).json({result: false, reason: "Cannot post article"});
+                }
             });
         }
-        else
+        else {
+            console.log(error);
             res.status(503).json(error);
+        }
     });
 });
 module.exports = router
