@@ -36,7 +36,7 @@ router.post('/', function (req, res, next) {
         'END ' +
         'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?';
 
-    connection.query('select * from user_info where user_id= ?  and food_index=? and distinction = ?;', [contact.user_id, contact.food_index], function (error, info1) {
+    connection.query('select * from user_info where user_id= ?  and food_index=? ;', [contact.user_id, contact.food_index], function (error, info1) {
         if (error == null) {
             if (info1.length > 0) {
                 var queryArray = [];
