@@ -15,6 +15,8 @@ router.post('/', function (req, res, next) {
 
         console.log(contact);
 
+        console.log(req.body);
+
         connection.query('select * from user_info where user_id= ?  and food_index=? and distinction = ?;', [contact.user_id, contact.food_index, contact.distinction], function (error, info1) {
             if (error == null) {
                 if (info1.length > 0) {
