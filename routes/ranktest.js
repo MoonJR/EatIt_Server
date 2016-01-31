@@ -6,6 +6,7 @@ var connection = mysql.createConnection({
     'user': 'eatit',
     'password': 'eatit123',
     'database': 'eat_it',
+    'multipleStatements': true
 });
 
 router.post('/', function (req, res, next) {
@@ -40,20 +41,6 @@ router.post('/', function (req, res, next) {
                         res.status(503).json(error);
                     }
                 });
-                connection.query(query_user_info, queryArray, function (error2, info2) {
-                    if (error2 != null) {
-                        console.log(error2);
-                        res.status(503).json(error);
-                    }
-                });
-
-                connection.query(query_food_list, queryArray, function (error2, info2) {
-                    if (error2 != null) {
-                        console.log(error2);
-                        res.status(503).json(error);
-                    }
-                });
-
 
             }
             else if (info1.length <= 0) {
