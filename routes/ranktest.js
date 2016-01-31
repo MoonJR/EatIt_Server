@@ -114,7 +114,7 @@ var query_my_info = 'UPDATE my_info ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'END ' +
-    'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?;';
+    'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?; ';
 var query_user_info = 'UPDATE user_info ' +
     'SET user_info.weight=CASE ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
@@ -134,7 +134,7 @@ var query_user_info = 'UPDATE user_info ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'END ' +
-    'WHERE user_info.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND user_info.user_id=?;';
+    'WHERE user_info.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND user_info.user_id=?; ';
 var query_food_list = 'UPDATE food_list ' +
     'SET food_list.rank=CASE ' +
     'WHEN food_list.food_index=? THEN food_list.rank+? ' +
@@ -154,5 +154,5 @@ var query_food_list = 'UPDATE food_list ' +
     'WHEN food_list.food_index=? THEN food_list.rank+? ' +
     'WHEN food_list.food_index=? THEN food_list.rank+? ' +
     'END ' +
-    'WHERE food_list.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
+    'WHERE food_list.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); ';
 module.exports = router;
