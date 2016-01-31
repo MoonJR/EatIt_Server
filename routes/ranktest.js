@@ -32,9 +32,22 @@ router.post('/', function (req, res, next) {
                 queryArray = queryArray.concat(queryArrayTmp);
                 queryArray.push(contact.user_id);
 
-                queryArray = queryArray.concat(queryArray).concat(queryArray);
+                // queryArray = queryArray.concat(queryArray).concat(queryArray);
 
                 connection.query(query_my_info + query_user_info + query_food_list, queryArray, function (error2, info2) {
+                    if (error2 != null) {
+                        console.log(error2);
+                        res.status(503).json(error);
+                    }
+                });
+                connection.query(query_user_info, queryArray, function (error2, info2) {
+                    if (error2 != null) {
+                        console.log(error2);
+                        res.status(503).json(error);
+                    }
+                });
+
+                connection.query(query_food_list, queryArray, function (error2, info2) {
                     if (error2 != null) {
                         console.log(error2);
                         res.status(503).json(error);
