@@ -102,7 +102,7 @@ var query_my_info = 'UPDATE my_info ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'END ' +
     'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?;';
-var query_user_info = 'UPDATE my_info ' +
+var query_user_info = 'UPDATE user_info ' +
     'SET user_info.weight=CASE ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
