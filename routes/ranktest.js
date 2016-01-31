@@ -67,7 +67,7 @@ router.post('/', function (req, res, next) {
                     }
                 }
 
-                queryArray.concat(queryArrayTmp);
+                queryArray.push(queryArrayTmp);
                 queryArray.push(contact.user_id);
                 console.log(queryArray);
                 connection.query(query, queryArray, function (error2, info2) {
