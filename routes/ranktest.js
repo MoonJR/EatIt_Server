@@ -10,18 +10,14 @@ var connection = mysql.createConnection({
 });
 
 router.post('/', function (req, res, next) {
-
-    var jsontext = JSON.stringify(req.body[0]);
-    var contact = JSON.parse(jsontext);
-
+    var contact = req.body[0];
     connection.query('select * from user_info where user_id= ?  and food_index=? ;', [contact.user_id, contact.food_index], function (error, info1) {
-        if (error == null) {
+        if (!error) {
             if (info1.length > 0) {
                 var queryArray = [];
                 var queryArrayTmp = [];
-                for (var i = 0; i < 64; i++) {  //for문시작
-                    var js = JSON.stringify(req.body[i]);
-                    var con = JSON.parse(js);
+                for (var i = 0; i < req.body.length; i++) {  //for문시작
+                    var con = req.body[i]
                     if (con.weight > 0) {
                         queryArray.push(con.food_index);
                         queryArray.push(con.weight);
@@ -29,60 +25,104 @@ router.post('/', function (req, res, next) {
                     }
 
                 }
-
                 queryArray = queryArray.concat(queryArrayTmp);
                 queryArray.push(contact.user_id);
-
                 queryArray = queryArray.concat(queryArray).concat(queryArray);
-
-                connection.query(query_my_info + query_user_info + query_food_list, queryArray, function (error2, info2) {
+                connection.query(update_query, queryArray, function (error2, info2) {
                     if (error2 != null) {
                         console.log(error2);
                         res.status(503).json(error);
+                    } else {
+                        res.status(200).send();
                     }
                 });
-
             }
-            else if (info1.length <= 0) {
-                console.log('test');
-                for (var i = 0; i < 64; i++) {  //for문시작
+            else {
 
+                var queryArray = [];
+                var queryArrayUpdate = [];
+                var queryArrayUpdateTmp = [];
 
-                    var js = JSON.stringify(req.body[i]);
-                    var con = JSON.parse(js);
+                for (var i = 0; i < req.body.length; i++) {  //for문시작
+                    var con = req.body[i];
 
-                    connection.query('insert into user_info(user_id, food_index, weight, distinction) values(?,?,?,?);', [con.user_id, con.food_index, con.weight, con.distinction], function (error3, info3) {
-                        if (error3 != null) {
-                            console.log(error3);
-                            res.status(503).json(error3);
-                        }
-                    });
+                    queryArray.push(con.user_id);
+                    queryArray.push(con.food_index);
+                    queryArray.push(con.weight);
+                    queryArray.push(con.distinction);
 
-                    connection.query('insert into my_info(user_id, my_food_index, my_weight, my_distinction) values(?,?,?,?);', [con.user_id, con.food_index, con.weight, con.distinction], function (error3, info3) {
-                        if (error3 != null) {
-                            console.log(error3);
-                            res.status(503).json(error3);
-                        }
-                    });
-
-                    connection.query('UPDATE food_list SET rank = rank + ? WHERE food_index = ? and distinction = ?; ', [con.weight, con.food_index, con.distinction], function (error3, info3) {
-                        if (error3 != null) {
-                            console.log(error3);
-                            res.status(503).json(error3);
-                        }
-                    });
+                    if (con.weight > 0) {
+                        queryArrayUpdate.push(con.food_index);
+                        queryArrayUpdate.push(con.weight);
+                        queryArrayUpdateTmp.push(con.food_index);
+                    }
                 }
+                queryArrayUpdate = queryArrayUpdate.concat(queryArrayUpdateTmp);
+                var insertQuery = queryArray.concat(queryArray);
+                insertQuery = insertQuery.concat(queryArrayUpdate);
+
+                connection.query(insert_query, insertQuery, function (err, result) {
+                    if (err) {
+                        res.status(503).json(err);
+                    } else {
+                        res.status(200).send();
+                    }
+                });
             }
-        }
-        else {
+        } else {
             console.log(error);
             res.status(503).json(error);
         }
     });
 });
 
+var insert_query = 'insert into user_info(user_id, food_index, weight, distinction) ' +
+    'values (?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?);' +
+    'insert into my_info(user_id, my_food_index, my_weight, my_distinction) ' +
+    'values (?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?),' +
+    '(?,?,?,?),(?,?,?,?),(?,?,?,?),(?,?,?,?);'
+    + 'UPDATE food_list ' +
+    'SET food_list.rank=CASE ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'WHEN food_list.food_index=? THEN food_list.rank+? ' +
+    'END ' +
+    'WHERE food_list.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); ';
 
-var query_my_info = 'UPDATE my_info ' +
+
+var update_query = 'UPDATE my_info ' +
     'SET my_info.my_weight=CASE ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
@@ -101,8 +141,8 @@ var query_my_info = 'UPDATE my_info ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'WHEN my_info.my_food_index=? THEN my_info.my_weight+? ' +
     'END ' +
-    'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?; ';
-var query_user_info = 'UPDATE user_info ' +
+    'WHERE my_info.my_food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND my_info.user_id=?; '
+    + 'UPDATE user_info ' +
     'SET user_info.weight=CASE ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
@@ -121,8 +161,8 @@ var query_user_info = 'UPDATE user_info ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'WHEN user_info.food_index=? THEN user_info.weight+? ' +
     'END ' +
-    'WHERE user_info.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND user_info.user_id=?; ';
-var query_food_list = 'UPDATE food_list ' +
+    'WHERE user_info.food_index IN(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND user_info.user_id=?; '
+    + 'UPDATE food_list ' +
     'SET food_list.rank=CASE ' +
     'WHEN food_list.food_index=? THEN food_list.rank+? ' +
     'WHEN food_list.food_index=? THEN food_list.rank+? ' +
