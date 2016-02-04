@@ -19,7 +19,7 @@ router.post('/', function (req, res) {
 
     pool.getConnection(function (err, connection) {
         if (err) {
-            res.statusCode(503).json({result: false, reason: 'can not get connection'});
+            res.status(503).json({result: false, reason: 'can not get connection'});
             connection.release();
         } else {
             connection.query('insert into user_list(user_id, user_pw, user_birthdate, user_gender,user_email) values (?, ?, ?, ?, ?);', [user_id, cipheredOutput, user_birthdate, user_gender, user_email], function (error, info) {

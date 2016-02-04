@@ -6,7 +6,7 @@ router.post('/', function (req, res) {
     pool.getConnection(function (err, connection) {
         connection.release();
         if (err) {
-            res.statusCode(503).json({result: false, reason: 'can not get connection'});
+            res.status(503).json({result: false, reason: 'can not get connection'});
             connection.release();
         } else {
             connection.query('select * from user_list where user_id=?;', [req.body.user_id], function (error, info) {
