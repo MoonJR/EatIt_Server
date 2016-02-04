@@ -7,7 +7,6 @@ router.get('/:content_id', function (req, res) {
     pool.getConnection(function (err, connection) {
         if (err) {
             res.status(503).json({result: false, reason: 'can not get connection'});
-            connection.release();
         } else {
             connection.query('select food_name, rank, food_index from food_list where distinction = ? ' + 'order by rank desc limit 10;', [req.params.content_id], function (error, cursor) {
                 connection.release();

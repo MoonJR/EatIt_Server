@@ -7,9 +7,8 @@ var pool = mysql.createPool({
     host: 'simple.jongrakko.net',
     user: 'eatit',
     password: 'eatit123',
-    database: 'simple_memo',
+    database: 'eat_it',
     multipleStatements: true
-
 });
 
 exports.mysqlPool = pool;

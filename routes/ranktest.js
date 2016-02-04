@@ -8,7 +8,6 @@ router.post('/', function (req, res) {
     pool.getConnection(function (err, connection) {
         if (err) {
             res.status(503).json({result: false, reason: 'can not get connection'});
-            connection.release();
         } else {
             connection.query('select * from user_info where user_id= ?  and food_index=? ;', [contact.user_id, contact.food_index], function (error, info1) {
                 if (!error) {

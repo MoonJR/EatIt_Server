@@ -4,13 +4,12 @@ var crypto = require('crypto');
 var router = express.Router();
 router.post('/', function (req, res) {
     pool.getConnection(function (err, connection) {
-        connection.release();
         if (err) {
             res.status(503).json({result: false, reason: 'can not get connection'});
-            connection.release();
         } else {
             connection.query('select * from user_list where user_id=?;', [req.body.user_id], function (error, info) {
-                if (error == null) {
+                connection.release();
+                if (!err) {
                     if (info.length > 0) {
                         res.json({
                             result: true,
