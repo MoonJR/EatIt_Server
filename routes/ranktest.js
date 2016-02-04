@@ -1,79 +1,83 @@
+var pool = require('../manager/mysql').mysqlPool;
 var express = require('express');
-var mysql = require('mysql');
 var router = express.Router();
-var connection = mysql.createConnection({
-    'host': 'simple.jongrakko.net',
-    'user': 'eatit',
-    'password': 'eatit123',
-    'database': 'eat_it',
-    'multipleStatements': true
-});
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
     var contact = req.body[0];
-    connection.query('select * from user_info where user_id= ?  and food_index=? ;', [contact.user_id, contact.food_index], function (error, info1) {
-        if (!error) {
-            if (info1.length > 0) {
-                var queryArray = [];
-                var queryArrayTmp = [];
-                for (var i = 0; i < req.body.length; i++) {  //for문시작
-                    var con = req.body[i]
-                    if (con.weight > 0) {
-                        queryArray.push(con.food_index);
-                        queryArray.push(con.weight);
-                        queryArrayTmp.push(con.food_index);
-                    }
 
-                }
-                queryArray = queryArray.concat(queryArrayTmp);
-                queryArray.push(contact.user_id);
-                queryArray = queryArray.concat(queryArray).concat(queryArray);
-                connection.query(update_query, queryArray, function (error2, info2) {
-                    if (error2 != null) {
-                        console.log(error2);
-                        res.status(503).json(error);
-                    } else {
-                        res.status(200).send();
-                    }
-                });
-            }
-            else {
-
-                var queryArray = [];
-                var queryArrayUpdate = [];
-                var queryArrayUpdateTmp = [];
-
-                for (var i = 0; i < req.body.length; i++) {  //for문시작
-                    var con = req.body[i];
-
-                    queryArray.push(con.user_id);
-                    queryArray.push(con.food_index);
-                    queryArray.push(con.weight);
-                    queryArray.push(con.distinction);
-
-                    if (con.weight > 0) {
-                        queryArrayUpdate.push(con.food_index);
-                        queryArrayUpdate.push(con.weight);
-                        queryArrayUpdateTmp.push(con.food_index);
-                    }
-                }
-                queryArrayUpdate = queryArrayUpdate.concat(queryArrayUpdateTmp);
-                var insertQuery = queryArray.concat(queryArray);
-                insertQuery = insertQuery.concat(queryArrayUpdate);
-
-                connection.query(insert_query, insertQuery, function (err, result) {
-                    if (err) {
-                        res.status(503).json(err);
-                    } else {
-                        res.status(200).send();
-                    }
-                });
-            }
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            res.statusCode(503).json({result: false, reason: 'can not get connection'});
+            connection.release();
         } else {
-            console.log(error);
-            res.status(503).json(error);
+            connection.query('select * from user_info where user_id= ?  and food_index=? ;', [contact.user_id, contact.food_index], function (error, info1) {
+                if (!error) {
+                    if (info1.length > 0) {
+                        var queryArray = [];
+                        var queryArrayTmp = [];
+                        for (var i = 0; i < req.body.length; i++) {  //for문시작
+                            var con = req.body[i]
+                            if (con.weight > 0) {
+                                queryArray.push(con.food_index);
+                                queryArray.push(con.weight);
+                                queryArrayTmp.push(con.food_index);
+                            }
+
+                        }
+                        queryArray = queryArray.concat(queryArrayTmp);
+                        queryArray.push(contact.user_id);
+                        queryArray = queryArray.concat(queryArray).concat(queryArray);
+                        connection.query(update_query, queryArray, function (error2, info2) {
+                            connection.release();
+                            if (error2 != null) {
+                                console.log(error2);
+                                res.status(503).json(error);
+                            } else {
+                                res.status(200).send();
+                            }
+                        });
+                    }
+                    else {
+
+                        var queryArray = [];
+                        var queryArrayUpdate = [];
+                        var queryArrayUpdateTmp = [];
+
+                        for (var i = 0; i < req.body.length; i++) {  //for문시작
+                            var con = req.body[i];
+
+                            queryArray.push(con.user_id);
+                            queryArray.push(con.food_index);
+                            queryArray.push(con.weight);
+                            queryArray.push(con.distinction);
+
+                            if (con.weight > 0) {
+                                queryArrayUpdate.push(con.food_index);
+                                queryArrayUpdate.push(con.weight);
+                                queryArrayUpdateTmp.push(con.food_index);
+                            }
+                        }
+                        queryArrayUpdate = queryArrayUpdate.concat(queryArrayUpdateTmp);
+                        var insertQuery = queryArray.concat(queryArray);
+                        insertQuery = insertQuery.concat(queryArrayUpdate);
+
+                        connection.query(insert_query, insertQuery, function (err, result) {
+                            connection.release();
+                            if (err) {
+                                res.status(503).json(err);
+                            } else {
+                                res.status(200).send();
+                            }
+                        });
+                    }
+                } else {
+                    connection.release();
+                    res.status(503).json(error);
+                }
+            });
         }
     });
+
 });
 
 var insert_query = 'insert into user_info(user_id, food_index, weight, distinction) ' +
